@@ -1,7 +1,7 @@
 import React from 'react';
 import {Image, Pressable, StyleSheet} from 'react-native';
 
-import {rootStore} from '../store/RootStore';
+import {rootStore} from '../../store/RootStore';
 
 interface Props {
   photoId: string;

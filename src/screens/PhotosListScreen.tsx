@@ -1,20 +1,31 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {observer} from 'mobx-react-lite';
 import React, {useCallback} from 'react';
-import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
+import {Alert, FlatList, RefreshControl, StyleSheet, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 import {rootStore} from '../store/RootStore';
-import ListPhoto from '../components/ListPhoto';
+import ListPhoto from '../components/photos/ListPhoto';
 import indent from '../theme/indent';
+import {PhotosListScreenNavigationProp} from '../navigation/types';
+import NavigationKeys from '../navigation/NavigationKeys';
+import {colors} from '../theme/colors';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import PhotosLoadErrorHandler from '../components/photos/PhotosLoadErrorHandler';
 
 const START_PAGE = 1;
 
-const ImagesListScreen: React.FC = observer(() => {
-  const [error, setError] = React.useState<Error | null>(null);
+const PhotosListScreen: React.FC = observer(() => {
+  const [paginationLoadError, setPaginationLoadError] =
+    React.useState<Error | null>(null);
+
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [page, setPage] = React.useState(START_PAGE);
 
   const photoIds = rootStore.photosStore.photoIds;
+
+  const navigation = useNavigation<PhotosListScreenNavigationProp>();
+  const insets = useSafeAreaInsets();
 
   React.useEffect(() => {
     refreshPhotosList();
@@ -25,24 +36,27 @@ const ImagesListScreen: React.FC = observer(() => {
     try {
       await rootStore.photosStore.refreshPhotosList();
       setPage(START_PAGE + 1);
-    } catch (err: any) {
-      setError(err);
+    } catch {
+      Alert.alert('Error', 'Error of getting photos list. Try again', [
+        {text: 'OK'},
+      ]);
     } finally {
       setIsRefreshing(false);
     }
   }, []);
 
-  const onEndReached = useCallback(async () => {
+  const loadPhotos = useCallback(async () => {
+    setPaginationLoadError(null);
     try {
       await rootStore.photosStore.loadPhotos(page);
       setPage(currPage => currPage + 1);
     } catch (err: any) {
-      setError(err);
+      setPaginationLoadError(err);
     }
   }, [page]);
 
   const handlePhotoPress = useCallback((photoId: string) => {
-    // navigating to screen
+    navigation.navigate(NavigationKeys.PhotosViewingScreen, {photoId});
   }, []);
 
   return (
@@ -61,11 +75,21 @@ const ImagesListScreen: React.FC = observer(() => {
         )}
         initialNumToRender={21}
         numColumns={3}
-        contentContainerStyle={styles.contentContainer}
+        contentContainerStyle={[
+          styles.contentContainer,
+          {paddingBottom: insets.bottom + indent.s},
+        ]}
         columnWrapperStyle={styles.wrapper}
-        onEndReached={onEndReached}
+        // onEndReached={loadPhotos}
         onEndReachedThreshold={0.3}
         showsVerticalScrollIndicator={false}
+        ListFooterComponent={
+          <>
+            {!paginationLoadError && (
+              <PhotosLoadErrorHandler onPress={loadPhotos} />
+            )}
+          </>
+        }
       />
     </View>
   );
@@ -74,6 +98,7 @@ const ImagesListScreen: React.FC = observer(() => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.bg.primary,
   },
 
   contentContainer: {
@@ -86,4 +111,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ImagesListScreen;
+export default PhotosListScreen;

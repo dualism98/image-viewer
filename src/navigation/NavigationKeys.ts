@@ -1,6 +1,6 @@
 enum NavigationKeys {
-  ImagesListScreen = 'ImagesListScreen',
-  ImageViewingScreen = 'ImageViewingScreen',
+  PhotosListScreen = 'PhotosListScreen',
+  PhotosViewingScreen = 'PhotosViewingScreen',
 }
 
 export default NavigationKeys;

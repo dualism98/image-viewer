@@ -3,28 +3,28 @@ import NavigationKeys from './NavigationKeys';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 type RootStackParamsList = {
-  [NavigationKeys.ImagesListScreen]: undefined;
-  [NavigationKeys.ImageViewingScreen]: {
-    imageUrl: string;
+  [NavigationKeys.PhotosListScreen]: undefined;
+  [NavigationKeys.PhotosViewingScreen]: {
+    photoId: string;
   };
 };
 
-export type ImageListScreenRouteProp = RouteProp<
+export type PhotosListScreenRouteProp = RouteProp<
   RootStackParamsList,
-  NavigationKeys.ImagesListScreen
+  NavigationKeys.PhotosListScreen
 >;
-export type ImageListScreenNavigationProp = NativeStackNavigationProp<
+export type PhotosListScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamsList,
-  NavigationKeys.ImageViewingScreen
+  NavigationKeys.PhotosListScreen
 >;
 
-export type ImageViewingScreenRouteProp = RouteProp<
+export type PhotosViewingScreenRouteProp = RouteProp<
   RootStackParamsList,
-  NavigationKeys.ImageViewingScreen
+  NavigationKeys.PhotosViewingScreen
 >;
-export type ImageViewingScreenNavigationProp = NativeStackNavigationProp<
+export type PhotosViewingScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamsList,
-  NavigationKeys.ImageViewingScreen
+  NavigationKeys.PhotosViewingScreen
 >;
 
 export default RootStackParamsList;
