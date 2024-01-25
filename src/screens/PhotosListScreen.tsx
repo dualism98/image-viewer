@@ -80,12 +80,12 @@ const PhotosListScreen: React.FC = observer(() => {
           {paddingBottom: insets.bottom + indent.s},
         ]}
         columnWrapperStyle={styles.wrapper}
-        // onEndReached={loadPhotos}
+        onEndReached={loadPhotos}
         onEndReachedThreshold={0.3}
         showsVerticalScrollIndicator={false}
         ListFooterComponent={
           <>
-            {!paginationLoadError && (
+            {!!paginationLoadError && (
               <PhotosLoadErrorHandler onPress={loadPhotos} />
             )}
           </>
