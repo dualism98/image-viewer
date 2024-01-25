@@ -14,11 +14,30 @@ class PhotosStore {
     this.rootStore = rootStore;
   }
 
+  get photoIds() {
+    return this.photos.map(photo => photo.id);
+  }
+
+  async refreshPhotosList() {
+    try {
+      const photos = await ApiService.loadPhotos(1);
+      runInAction(() => {
+        this.photos = photos.map(photo => new Photo(this.rootStore, photo));
+      });
+    } catch {
+      throw new Error();
+    }
+  }
+
   async loadPhotos(page: number = 1) {
-    const photos = await ApiService.loadPhotos(page);
-    mapPhotosResponse(photos).map(photo => {
-      this.addPhoto(photo);
-    });
+    try {
+      const photos = await ApiService.loadPhotos(page);
+      mapPhotosResponse(photos).map(photo => {
+        this.addPhoto(photo);
+      });
+    } catch {
+      throw new Error();
+    }
   }
 
   addPhoto(photo: PhotosTypes.Photo) {

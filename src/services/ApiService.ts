@@ -6,7 +6,7 @@ class ApiService {
   async loadPhotos(page: number = 1): Promise<ApiPhotosTypes.Photo[]> {
     try {
       const response = await axiosInstance.get(
-        `/photos?page=${page}&per_page=20`,
+        `/photos?page=${page}&per_page=50`,
       );
       return response.data;
     } catch (err: any) {
