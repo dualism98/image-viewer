@@ -14,6 +14,13 @@ class PhotosStore {
     this.rootStore = rootStore;
   }
 
+  get photoById(): Record<string, Photo> {
+    return this.photos.reduce<Record<string, Photo>>((acc, curr) => {
+      acc[curr.id] = curr;
+      return acc;
+    }, {});
+  }
+
   get photoIds() {
     return this.photos.map(photo => photo.id);
   }

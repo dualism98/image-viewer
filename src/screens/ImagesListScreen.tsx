@@ -1,8 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {observer} from 'mobx-react-lite';
 import React, {useCallback} from 'react';
-import {FlatList, RefreshControl, StyleSheet, Text, View} from 'react-native';
+import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
 
 import {rootStore} from '../store/RootStore';
+import ListPhoto from '../components/ListPhoto';
+import indent from '../theme/indent';
 
 const START_PAGE = 1;
 
@@ -30,7 +33,6 @@ const ImagesListScreen: React.FC = observer(() => {
   }, []);
 
   const onEndReached = useCallback(async () => {
-    console.log('Here2');
     try {
       await rootStore.photosStore.loadPhotos(page);
       setPage(currPage => currPage + 1);
@@ -38,6 +40,10 @@ const ImagesListScreen: React.FC = observer(() => {
       setError(err);
     }
   }, [page]);
+
+  const handlePhotoPress = useCallback((photoId: string) => {
+    // navigating to screen
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -50,10 +56,16 @@ const ImagesListScreen: React.FC = observer(() => {
             onRefresh={refreshPhotosList}
           />
         }
-        renderItem={data => <Text>{data.item}</Text>}
-        initialNumToRender={20}
+        renderItem={data => (
+          <ListPhoto photoId={data.item} onPress={handlePhotoPress} />
+        )}
+        initialNumToRender={21}
+        numColumns={3}
+        contentContainerStyle={styles.contentContainer}
+        columnWrapperStyle={styles.wrapper}
         onEndReached={onEndReached}
         onEndReachedThreshold={0.3}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
@@ -62,6 +74,15 @@ const ImagesListScreen: React.FC = observer(() => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+
+  contentContainer: {
+    padding: indent.xxs,
+    gap: indent.xxs,
+  },
+
+  wrapper: {
+    gap: indent.xxs,
   },
 });
 
